@@ -47,9 +47,23 @@ jobs:
       - name: Download & Extract Skia
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri "https://github.com/aseprite/skia/releases/download/m102-861e4743af/Skia-Windows-Release-x64.zip" -OutFile "skia.zip" -UseBasicParsing
+          function Download-File($url, $out) {
+            for ($i=1; $i -le 6; $i++) {
+              try {
+                Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing -TimeoutSec 600
+                return
+              } catch {
+                Write-Host "Attempt $i failed: $($_.Exception.Message)"
+                Start-Sleep -Seconds 10
+              }
+            }
+            throw "Failed to download: $url"
+          }
+          Download-File "https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Release-x64.zip" "skia.zip"
           mkdir skia -Force
           Expand-Archive -Force "skia.zip" "skia"
+          mkdir skia\out\Release-x64 -Force
+          Download-File "https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/icudtl.dat" "skia/out/Release-x64/icudtl.dat"
           Write-Host "Skia extracted successfully"
 
       - name: Initialize MSVC Environment
