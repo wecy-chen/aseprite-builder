@@ -62,8 +62,6 @@ jobs:
           Download-File "https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/Skia-Windows-Release-x64.zip" "skia.zip"
           mkdir skia -Force
           Expand-Archive -Force "skia.zip" "skia"
-          mkdir skia\out\Release-x64 -Force
-          Download-File "https://github.com/aseprite/skia/releases/download/m124-08a5439a6b/icudtl.dat" "skia/out/Release-x64/icudtl.dat"
           Write-Host "Skia extracted successfully"
 
       - name: Initialize MSVC Environment
